@@ -1,5 +1,7 @@
 const express = require("express");
 const sequelize = require("./src/config/db");
+const { Rol, Usuario } = require("./src/models");
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,6 +13,12 @@ async function iniciarServidor() {
     await sequelize.authenticate();
 
     console.log("Conexión a Supabase exitosa");
+
+    const roles = await Rol.findAll();
+        console.log("Roles:", roles);
+
+        const usuarios=await Usuario.findAll()
+        console.log("Usuarios:", usuarios)
 
     // Levantamos Express solamente si la BD funciona
     app.listen(PORT, () => {
