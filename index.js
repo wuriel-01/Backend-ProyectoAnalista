@@ -1,12 +1,31 @@
-const express = require('express');  //instalar express "npm install express"
+const express = require("express");
+const sequelize = require("./src/config/db");
 
-const app = express(); // esta linea crea un servidor 
-const PORT = process.env.PORT || 3001;// esta linea define en que direcccion trabaja 
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-app.get("/", (req, res)=>{   // es una ruta que al llamarla responde FUNCIONA   
-res.send("Funciona")
-})
+app.use(express.json());
+async function iniciarServidor() {
+  try {
+    // Probamos la conexión con Supabase
+    await sequelize.authenticate();
 
-app.listen(PORT, () => {   // es un console.log que nos ayuda a saber que el servidor esta levantado 
-    console.log(`Listening on port: ${PORT}`);
+    console.log("Conexión a Supabase exitosa");
+
+    // Levantamos Express solamente si la BD funciona
+    app.listen(PORT, () => {
+      console.log(` Servidor escuchando en puerto ${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("Error al conectar a Supabase:");
+    console.error(error);
+  }
+}
+
+iniciarServidor();
+
+
+app.get("/", (req, res) => {
+  res.send("Funciona");
 });
